@@ -143,17 +143,32 @@
     &-large {
         height: 44px;
         padding: $button-padding-vertical-large $button-padding-horizontal-large;
+
+        &.floating.round-shape {
+            width: 44px;
+            height: 44px;
+        }
     }
 
     &-medium {
         height: 36px;
         padding: $button-padding-vertical-medium
             $button-padding-horizontal-medium;
+
+        &.floating.round-shape {
+            width: 36px;
+            height: 36px;
+        }
     }
 
     &-small {
         height: 28px;
         padding: $button-padding-vertical-small $button-padding-horizontal-small;
+
+        &.floating.round-shape {
+            width: 28px;
+            height: 28px;
+        }
     }
 
     &:disabled,
@@ -167,13 +182,13 @@
         pointer-events: none;
     }
 
-    &:hover {
+    &:hover:not([disabled]) {
         .counter {
             background-color: var(--button-counter-hover-background-color);
         }
     }
 
-    &:active {
+    &:active:not([disabled]) {
         .counter {
             background-color: var(--button-counter-active-background-color);
         }
@@ -245,11 +260,11 @@
     color: var(--color);
     background-color: var(--bg);
 
-    &:hover {
+    &:hover:not([disabled]) {
         --bg: var(--accent-color-10);
     }
 
-    &:active {
+    &:active:not([disabled]) {
         --bg: var(--accent-color-30);
     }
 }
@@ -262,11 +277,11 @@
     background-color: var(--bg);
     border: 1px solid var(--border);
 
-    &:hover {
+    &:hover:not([disabled]) {
         --bg: var(--accent-color-10);
     }
 
-    &:active {
+    &:active:not([disabled]) {
         --bg: var(--accent-color-20);
     }
 
@@ -293,11 +308,11 @@
     color: var(--color);
     background-color: var(--bg);
 
-    &:hover {
+    &:hover:not([disabled]) {
         --bg: var(--disruptive-color-10);
     }
 
-    &:active {
+    &:active:not([disabled]) {
         --bg: var(--disruptive-color-30);
     }
 }
@@ -309,11 +324,11 @@
     background-color: var(--bg);
     border: 1px solid var(--disruptive-color-70);
 
-    &:hover {
+    &:hover:not([disabled]) {
         --bg: var(--disruptive-color-10);
     }
 
-    &:active {
+    &:active:not([disabled]) {
         --bg: var(--disruptive-color-20);
     }
 }
@@ -324,11 +339,11 @@
     color: var(--color);
     background-color: var(--bg);
 
-    &:hover {
+    &:hover:not([disabled]) {
         --bg: var(--background-color);
     }
 
-    &:active {
+    &:active:not([disabled]) {
         --bg: var(--primary-color-20);
         color: var(--primary-color-80);
     }
@@ -338,12 +353,12 @@
     background-color: var(--white-color);
     color: var(--disruptive-color-70);
 
-    &:hover {
+    &:hover:not([disabled]) {
         background-color: var(--disruptive-color-10);
         color: var(--disruptive-color-70);
     }
 
-    &:active {
+    &:active:not([disabled]) {
         background-color: var(--disruptive-color-20);
         color: var(--disruptive-color-80);
     }
@@ -355,11 +370,11 @@
     color: var(--color);
     background-color: var(--bg);
 
-    &:hover {
+    &:hover:not([disabled]) {
         --bg: var(--background-color);
     }
 
-    &:active {
+    &:active:not([disabled]) {
         --bg: var(--grey-color-20);
     }
 }
@@ -377,11 +392,11 @@
         background-color: var(--bg);
     }
 
-    &:not(.transparent):hover {
+    &:not(.transparent):not([disabled]):hover {
         --bg: var(--grey-color-10);
     }
 
-    &:not(.transparent):active {
+    &:not(.transparent):not([disabled]):active {
         --bg: var(--grey-color-20);
     }
 }
@@ -493,7 +508,7 @@
         }
     }
 
-    &:hover {
+    &:hover:not([disabled]) {
         --bg: var(--green-color-10);
         --color: var(--accent-color-70);
 
@@ -502,7 +517,7 @@
         }
     }
 
-    &:active {
+    &:active:not([disabled]) {
         --bg: var(--green-color-20);
         --color: var(--accent-color);
 
@@ -517,6 +532,132 @@
 
         .counter {
             background-color: var(--button-counter-checked-background-color);
+        }
+    }
+}
+
+.button-rtl {
+    .icon + .button-text-large:not(:empty) {
+        margin-left: 0;
+        margin-right: $button-spacer-large;
+    }
+
+    .icon + .button-text-medium:not(:empty) {
+        margin-left: 0;
+        margin-right: $button-spacer-medium;
+    }
+
+    .icon + .button-text-small:not(:empty) {
+        margin-left: 0;
+        margin-right: $button-spacer-small;
+    }
+
+    &.split-left {
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
+        border-bottom-right-radius: $corner-radius-s;
+        border-top-right-radius: $corner-radius-s;
+
+        &.pill-shape {
+            border-bottom-right-radius: $corner-radius-xl;
+            border-top-right-radius: $corner-radius-xl;
+        }
+
+        .button-text-large {
+            &.counter {
+                margin-left: 0;
+                margin-right: $space-xs;
+            }
+        }
+
+        .button-text-medium {
+            &.counter {
+                margin-left: 0;
+                margin-right: $space-xs;
+            }
+        }
+
+        .button-text-small {
+            &.counter {
+                margin-left: 0;
+                margin-right: $space-xxs;
+            }
+        }
+    }
+
+    &.split-right {
+        border-bottom-left-radius: $corner-radius-s;
+        border-top-left-radius: $corner-radius-s;
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 0;
+
+        &.pill-shape {
+            border-bottom-left-radius: $corner-radius-xl;
+            border-top-left-radius: $corner-radius-xl;
+        }
+
+        .button-text-large {
+            &.counter {
+                margin-left: $space-xs;
+                margin-right: 0;
+            }
+        }
+
+        .button-text-medium {
+            &.counter {
+                margin-left: $space-xs;
+                margin-right: 0;
+            }
+        }
+
+        .button-text-small {
+            &.counter {
+                margin-left: $space-xxs;
+                margin-right: 0;
+            }
+        }
+    }
+
+    &.split-button {
+        .split-divider-large {
+            left: 50px;
+            right: unset;
+        }
+
+        .split-divider-medium {
+            left: 42px;
+            right: unset;
+        }
+
+        .split-divider-small {
+            left: 34px;
+            right: unset;
+        }
+    }
+
+    &.floating {
+        left: 40px;
+        right: unset;
+    }
+
+    .button-text-large {
+        &.counter {
+            margin-left: 0;
+            margin-right: $space-xs;
+        }
+    }
+
+    .button-text-medium {
+        &.counter {
+            margin-left: 0;
+            margin-right: $space-xs;
+        }
+    }
+
+    .button-text-small {
+        &.counter {
+            margin-left: 0;
+            margin-right: $space-xxs;
         }
     }
 }
@@ -584,18 +725,6 @@
             &.focus-visible,
             &:focus-visible {
                 margin: 0 2px;
-            }
-        }
-    }
-}
-
-.dark {
-    .button-wrapper {
-        .button {
-            background-color: inherit;
-
-            &.drop-shadow {
-                box-shadow: $shadow-object-s;
             }
         }
     }

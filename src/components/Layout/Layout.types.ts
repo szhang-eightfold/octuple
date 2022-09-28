@@ -1,5 +1,4 @@
 import React from 'react';
-import { OcBaseProps } from '../OcBase';
 
 export interface GeneratorProps {
     cssModifier: string;
@@ -13,7 +12,11 @@ export interface GeneratorProps {
         | 'section';
 }
 
-export interface BasicProps extends OcBaseProps<HTMLDivElement> {
+export interface BasicProps extends React.HTMLAttributes<HTMLDivElement> {
+    /**
+     * Custom classnames of the component
+     */
+    classNames?: string;
     /**
      * The layout has an aside.
      */
@@ -26,6 +29,10 @@ export interface BasicProps extends OcBaseProps<HTMLDivElement> {
      * The layout uses octuple styles.
      */
     octupleStyles?: boolean;
+    /**
+     * Unique id used to target element for testing
+     */
+    'data-test-id'?: string;
 }
 
 export interface LayoutContextProps {
@@ -68,7 +75,7 @@ export const AsideContext: React.Context<AsideContextProps> =
 
 export type CollapseType = 'clickTrigger' | 'responsive';
 
-export interface AsideProps extends OcBaseProps<HTMLDivElement> {
+export interface AsideProps extends React.HTMLAttributes<HTMLDivElement> {
     /**
      * The aside class names.
      */
@@ -81,6 +88,10 @@ export interface AsideProps extends OcBaseProps<HTMLDivElement> {
      * The aside breakpoints, to enable a responsive layout.
      */
     breakpoint?: 'xs' | 'sm' | 'md' | 'lg';
+    /**
+     * Custom classnames of the component
+     */
+    classNames?: string;
     /**
      * Sets whether the aside is collapsed.
      */
@@ -102,14 +113,16 @@ export interface AsideProps extends OcBaseProps<HTMLDivElement> {
     defaultCollapsed?: boolean;
     /**
      * The aside onBreakpoint callback.
+     * Executed when breakpoints change.
      */
     onBreakpoint?: (broken: boolean) => void;
     /**
      * The aside onCollapse callback.
+     * Executed by clicking the trigger or activating the responsive layout.
      */
     onCollapse?: (collapsed: boolean, type: CollapseType) => void;
     /**
-     * Sets whether the amburger arrow is reversed.
+     * Sets whether the hamburger arrow is reversed.
      * @default false
      */
     reverseArrow?: boolean;
@@ -123,7 +136,11 @@ export interface AsideProps extends OcBaseProps<HTMLDivElement> {
      */
     width?: number | string;
     /**
-     * The aside width trigger style.
+     * The aside width trigger style when `collapsedWidth` is 0.
      */
     zeroWidthTriggerStyle?: React.CSSProperties;
+    /**
+     * Unique id used to target element for testing
+     */
+    'data-test-id'?: string;
 }

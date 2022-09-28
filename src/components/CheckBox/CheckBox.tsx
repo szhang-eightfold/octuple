@@ -1,7 +1,11 @@
-import React, { FC, Ref, useEffect, useRef, useState } from 'react';
+import React, { FC, Ref, useContext, useEffect, useRef, useState } from 'react';
+import DisabledContext, { Disabled } from '../ConfigProvider/DisabledContext';
+import { SizeContext, Size } from '../ConfigProvider';
 import { generateId, mergeClasses } from '../../shared/utilities';
-import { CheckboxProps, LabelPosition, SelectorSize } from './';
+import { CheckboxProps, LabelAlign, LabelPosition, SelectorSize } from './';
 import { Breakpoints, useMatchMedia } from '../../hooks/useMatchMedia';
+import { FormItemInputContext } from '../Form/Context';
+import { useCanvasDirection } from '../../hooks/useCanvasDirection';
 
 import styles from './checkbox.module.scss';
 
@@ -12,11 +16,17 @@ export const CheckBox: FC<CheckboxProps> = React.forwardRef(
             ariaLabel,
             checked = false,
             classNames,
+            configContextProps = {
+                noDisabledContext: false,
+                noSizeContext: false,
+            },
             defaultChecked,
             disabled = false,
+            formItemInput = false,
             id,
             label,
             labelPosition = LabelPosition.End,
+            labelAlign = LabelAlign.Center,
             name,
             onChange,
             size = SelectorSize.Medium,
@@ -32,10 +42,25 @@ export const CheckBox: FC<CheckboxProps> = React.forwardRef(
         const smallScreenActive: boolean = useMatchMedia(Breakpoints.Small);
         const xSmallScreenActive: boolean = useMatchMedia(Breakpoints.XSmall);
 
+        const htmlDir: string = useCanvasDirection();
+
         const checkBoxId = useRef<string>(id || generateId());
         const [isChecked, setIsChecked] = useState<boolean>(
             defaultChecked || checked
         );
+
+        const { isFormItemInput } = useContext(FormItemInputContext);
+        const mergedFormItemInput: boolean = isFormItemInput || formItemInput;
+
+        const contextuallyDisabled: Disabled = useContext(DisabledContext);
+        const mergedDisabled: boolean = configContextProps.noDisabledContext
+            ? disabled
+            : contextuallyDisabled || disabled;
+
+        const contextuallySized: Size = useContext(SizeContext);
+        const mergedSize = configContextProps.noSizeContext
+            ? size
+            : contextuallySized || size;
 
         useEffect(() => {
             setIsChecked(checked);
@@ -45,25 +70,27 @@ export const CheckBox: FC<CheckboxProps> = React.forwardRef(
             styles.selector,
             {
                 [styles.selectorSmall]:
-                    size === SelectorSize.Flex && largeScreenActive,
+                    mergedSize === SelectorSize.Flex && largeScreenActive,
             },
             {
                 [styles.selectorMedium]:
-                    size === SelectorSize.Flex && mediumScreenActive,
+                    mergedSize === SelectorSize.Flex && mediumScreenActive,
             },
             {
                 [styles.selectorMedium]:
-                    size === SelectorSize.Flex && smallScreenActive,
+                    mergedSize === SelectorSize.Flex && smallScreenActive,
             },
             {
                 [styles.selectorLarge]:
-                    size === SelectorSize.Flex && xSmallScreenActive,
+                    mergedSize === SelectorSize.Flex && xSmallScreenActive,
             },
-            { [styles.selectorLarge]: size === SelectorSize.Large },
-            { [styles.selectorMedium]: size === SelectorSize.Medium },
-            { [styles.selectorSmall]: size === SelectorSize.Small },
+            { [styles.selectorLarge]: mergedSize === SelectorSize.Large },
+            { [styles.selectorMedium]: mergedSize === SelectorSize.Medium },
+            { [styles.selectorSmall]: mergedSize === SelectorSize.Small },
             classNames,
-            { [styles.disabled]: allowDisabledFocus || disabled },
+            { [styles.disabled]: allowDisabledFocus || mergedDisabled },
+            { [styles.selectorRtl]: htmlDir === 'rtl' },
+            { ['in-form-item']: mergedFormItemInput },
         ]);
 
         const checkBoxCheckClassNames: string = mergeClasses([
@@ -72,7 +99,11 @@ export const CheckBox: FC<CheckboxProps> = React.forwardRef(
         ]);
 
         const labelClassNames: string = mergeClasses([
-            { [styles.labelNoValue]: value === '' },
+            {
+                [styles.labelNoValue]: value === '',
+                [styles.alignStart]: labelAlign === LabelAlign.Start,
+                [styles.alignEnd]: labelAlign === LabelAlign.End,
+            },
         ]);
 
         const selectorLabelClassNames: string = mergeClasses([
@@ -99,10 +130,10 @@ export const CheckBox: FC<CheckboxProps> = React.forwardRef(
             >
                 <input
                     ref={ref}
-                    aria-disabled={disabled}
+                    aria-disabled={mergedDisabled}
                     aria-label={ariaLabel}
                     checked={isChecked}
-                    disabled={!allowDisabledFocus && disabled}
+                    disabled={!allowDisabledFocus && mergedDisabled}
                     id={checkBoxId.current}
                     onChange={!allowDisabledFocus ? toggleChecked : null}
                     name={name}

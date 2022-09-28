@@ -13,16 +13,27 @@
         z-index: 1;
 
         &[disabled] {
-            cursor: not-allowed;
-
             & + label {
-                .radio-button {
-                    opacity: 50%;
-                }
+                opacity: $disabled-alpha-value;
+                cursor: not-allowed;
             }
         }
 
         & + label {
+            &.align-start {
+                align-items: flex-start;
+                display: flex;
+            }
+
+            &.align-end {
+                align-items: flex-end;
+                display: flex;
+            }
+
+            &.align-start .radio-button {
+                margin-top: $space-xxxs;
+            }
+
             .radio-button {
                 border: $space-xxxs solid var(--grey-color-70);
                 border-radius: 50%;
@@ -31,8 +42,9 @@
                 min-height: $radio-medium-height;
                 min-width: $radio-medium-width;
                 position: relative;
-                transition: all $motion-duration-extra-fast $motion-ease-in-back
-                    $motion-delay-s;
+                transition: all $motion-duration-extra-fast
+                    $motion-easing-easeinout 0s;
+                width: $radio-medium-width;
 
                 &:after {
                     top: $radio-medium-after-top;
@@ -47,11 +59,10 @@
                     transform: scale(0);
                     opacity: 0;
                     display: block;
-                    transition-delay: $motion-delay-s;
                     transition-duration: $motion-duration-extra-fast;
                     transition-property: opacity;
                     transition-property: transform;
-                    transition-timing-function: $motion-ease-in-back;
+                    transition-timing-function: $motion-easing-easeinout;
                 }
             }
         }
@@ -73,12 +84,15 @@
 
     input:checked {
         &[disabled] {
-            cursor: not-allowed;
+            & + label {
+                opacity: $disabled-alpha-value;
+                cursor: not-allowed;
+            }
         }
 
         & + label {
-            transition: all $motion-duration-extra-fast $motion-ease-out-back
-                $motion-delay-s;
+            transition: all $motion-duration-extra-fast $motion-easing-easeinout
+                0s;
 
             .radio-button {
                 background-color: var(--accent-color-30);
@@ -88,11 +102,10 @@
             .radio-button:after {
                 opacity: 1;
                 transform: scale(0.8);
-                transition-delay: $motion-delay-s;
                 transition-duration: $motion-duration-extra-fast;
                 transition-property: opacity;
                 transition-property: transform;
-                transition-timing-function: $motion-ease-out-back;
+                transition-timing-function: $motion-easing-easeinout;
             }
         }
 
@@ -254,16 +267,69 @@
     &.disabled {
         input {
             cursor: not-allowed;
-
             & + label {
-                .radio-button {
-                    opacity: 50%;
-                }
+                opacity: $disabled-alpha-value;
             }
         }
 
         input:checked {
             cursor: not-allowed;
+        }
+    }
+
+    &-rtl {
+        .selector-label {
+            &-end {
+                margin-left: 0;
+                margin-right: $space-xs;
+            }
+
+            &-start {
+                margin-left: $space-xs;
+                margin-right: 0;
+            }
+        }
+
+        &-large {
+            .selector-label {
+                &-end {
+                    margin-left: 0;
+                    margin-right: $space-m;
+                }
+
+                &-start {
+                    margin-left: $space-m;
+                    margin-right: 0;
+                }
+            }
+        }
+
+        &-medium {
+            .selector-label {
+                &-end {
+                    margin-left: 0;
+                    margin-right: $space-xs;
+                }
+
+                &-start {
+                    margin-left: $space-xs;
+                    margin-right: 0;
+                }
+            }
+        }
+
+        &-small {
+            .selector-label {
+                &-end {
+                    margin-left: 0;
+                    margin-right: $space-xxs;
+                }
+
+                &-start {
+                    margin-left: $space-xxs;
+                    margin-right: 0;
+                }
+            }
         }
     }
 }

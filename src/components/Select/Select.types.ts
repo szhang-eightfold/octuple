@@ -1,9 +1,11 @@
 import React from 'react';
 import { DropdownProps } from '../Dropdown';
 import { TextInputProps, TextInputWidth } from '../Inputs';
-import { MenuItemButtonProps, MenuProps } from '../Menu';
+import { MenuProps } from '../Menu';
 import { OcBaseProps } from '../OcBase';
 import { PillProps } from '../Pills';
+import { MenuItemButtonProps } from '../Menu/MenuItem/MenuItem.types';
+import { ConfigContextProps, Shape, Size } from '../ConfigProvider';
 
 export enum SelectShape {
     Rectangle = 'rectangle',
@@ -19,116 +21,126 @@ export enum SelectSize {
 }
 
 export interface SelectOption extends MenuItemButtonProps {
-    selected?: boolean;
+    /**
+     * Hide the select option.
+     */
     hideOption?: boolean;
+    /**
+     * The select option id.
+     */
     id?: string;
+    /**
+     * The select option selected state.
+     */
+    selected?: boolean;
 }
 
-export interface SelectProps extends OcBaseProps<HTMLSelectElement> {
+export interface SelectProps extends OcBaseProps<HTMLDivElement> {
     /**
-     * Default Value
-     * @default ''
-     */
-    defaultValue?: string;
-
-    /**
-     * Width of the tooltip
-     * @default fitContent
-     */
-    inputWidth?: TextInputWidth;
-
-    /**
-     * Default options
-     * @default ''
-     */
-    options?: SelectOption[];
-
-    /**
-     * clearable.
+     * Whether the select text input is clearable.
      * @default false
      */
     clearable?: boolean;
-
     /**
-     * enable filtering/searching on the options
+     * Configure how contextual props are consumed.
+     */
+    configContextProps?: ConfigContextProps;
+    /**
+     * The select default value.
+     * @default ''
+     */
+    defaultValue?: string;
+    /**
+     * The select disabled state.
      * @default false
      */
-    filterable?: boolean;
-
+    disabled?: boolean;
     /**
-     * in case of multiple select.
-     * @default false
-     */
-    multiple?: boolean;
-
-    /**
-     * Callback called when options are selected/unselected
-     * @param options {SelectOption[]}
-     */
-    onOptionsChange?: (options: SelectOption[]) => void;
-
-    /**
-     * for async loading options.
-     * @default false
-     */
-    loadOptions?: (inputValue: string) => void;
-
-    /**
-     * applicable in case of loadOptions. pass true when the loading is in progress.
-     * @default false
-     */
-    isLoading?: boolean;
-
-    /**
-     * display text when there are no filtered results.
-     */
-    emptyText?: string;
-
-    /**
-     * select input props.
-     * @default {}
-     */
-    textInputProps?: TextInputProps;
-
-    /**
-     * dropdown and overlay props.
+     * The Dropdown and overlay props.
      * @default {}
      */
     dropdownProps?: DropdownProps;
-
     /**
-     * pill props. applicable in case of multiple: true.
-     * @default {}
+     * Display text when there are no filtered results.
+     * @default 'No match found.'
      */
-    pillProps?: PillProps;
-
+    emptyText?: string;
     /**
-     * dropdown menu props.
-     * @default {}
+     * Enable filtering/searching on the options.
+     * @default false
      */
-    menuProps?: MenuProps;
-
-    /**
-     * Shape of the select.
-     * @default SelectShape.Rectangle
-     */
-    shape?: SelectShape;
-
-    /**
-     * The select size.
-     * @default Flex
-     */
-    size?: SelectSize;
-
-    /**
-     * loading spinner props.
-     * @default {}
-     */
-    spinner?: React.ReactElement;
-
+    filterable?: boolean;
     /**
      * Custom method to filter whether an option should be displayed in the menu.
      * @default null
      */
     filterOption?: (option: any, query: any) => boolean;
+    /**
+     * The select is a form item.
+     * @default false
+     */
+    formItemInput?: boolean;
+    /**
+     * Width of the Select text input.
+     * @default TextInputWidth.fitContent
+     */
+    inputWidth?: TextInputWidth;
+    /**
+     * Applicable in case of loadOptions. pass true when the loading is in progress.
+     * @default false
+     */
+    isLoading?: boolean;
+    /**
+     * For async loading of options.
+     */
+    loadOptions?: (inputValue: string) => void;
+    /**
+     * The Dropdown Menu props.
+     * @default {}
+     */
+    menuProps?: MenuProps;
+    /**
+     * In case of multiple select.
+     * @default false
+     */
+    multiple?: boolean;
+    /**
+     * Callback called when the clear button is clicked.
+     */
+    onClear?: () => void;
+    /**
+     * Callback called when options are selected/unselected.
+     * @param options {SelectOption[]}
+     */
+    onOptionsChange?: (options: SelectOption[]) => void;
+    /**
+     * The select options.
+     * @default []
+     */
+    options?: SelectOption[];
+    /**
+     * The Pill props. Applicable in case of multiple: true.
+     * @default {}
+     */
+    pillProps?: PillProps;
+    /**
+     * Shape of the select.
+     * @default SelectShape.Rectangle
+     */
+    shape?: SelectShape | Shape;
+    /**
+     * The select size.
+     * @default SelectSize.Medium
+     */
+    size?: SelectSize | Size;
+    /**
+     * Loading spinner props in the select dropdown.
+     * @default {}
+     */
+    spinner?: React.ReactElement;
+    /**
+     * The select input props.
+     * @default {}
+     */
+    textInputProps?: TextInputProps;
 }

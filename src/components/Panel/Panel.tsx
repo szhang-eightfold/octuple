@@ -8,9 +8,11 @@ import React, {
 import { mergeClasses, stopPropagation } from '../../shared/utilities';
 import { PanelProps, PanelRef, PanelSize } from './';
 import { IconName } from '../Icon';
-import { NeutralButton } from '../Button';
+import { ButtonShape, NeutralButton } from '../Button';
 import { Portal } from '../Portal';
 import { useScrollLock } from '../../hooks/useScrollLock';
+import { NoFormStyle } from '../Form/Context';
+import { useCanvasDirection } from '../../hooks/useCanvasDirection';
 
 import styles from './panel.module.scss';
 
@@ -58,15 +60,19 @@ export const Panel = React.forwardRef<PanelRef, PanelProps>(
             visible = false,
             width,
             panelHeader,
+            scrollLock = true,
             ...rest
         },
         ref
     ) => {
+        const htmlDir: string = useCanvasDirection();
+
         const panelRef = useRef<HTMLDivElement>(null);
         const containerRef = useRef<HTMLDivElement>(null);
         const parentPanel = useContext<PanelRef>(PanelContext);
         const [internalPush, setPush] = useState<boolean>(false);
-        useScrollLock(parent, visible);
+
+        useScrollLock(parent, !scrollLock ? false : visible);
 
         const panelBackdropClasses: string = mergeClasses([
             styles.panelBackdrop,
@@ -74,6 +80,7 @@ export const Panel = React.forwardRef<PanelRef, PanelProps>(
             { [styles.visible]: visible },
             { [styles.modeless]: overlay === false },
             { [styles.modelessMask]: overlay === false && maskClosable },
+            { [styles.panelBackdropRtl]: htmlDir === 'rtl' },
         ]);
 
         const panelClasses: string = mergeClasses([
@@ -125,7 +132,16 @@ export const Panel = React.forwardRef<PanelRef, PanelProps>(
                         <NeutralButton
                             ariaLabel={'Back'}
                             classNames={styles.headerButton}
-                            iconProps={{ path: headerIcon }}
+                            iconProps={{
+                                path: headerIcon,
+                            }}
+                            style={{
+                                transform:
+                                    htmlDir === 'rtl'
+                                        ? 'rotate(180deg)'
+                                        : 'none',
+                            }}
+                            shape={ButtonShape.Round}
                             {...headerButtonProps}
                         />
                     )}
@@ -133,19 +149,29 @@ export const Panel = React.forwardRef<PanelRef, PanelProps>(
                 </div>
                 <span className={styles.headerButtons}>
                     {actionButtonThreeProps && (
-                        <NeutralButton {...actionButtonThreeProps} />
+                        <NeutralButton
+                            shape={ButtonShape.Round}
+                            {...actionButtonThreeProps}
+                        />
                     )}
                     {actionButtonTwoProps && (
-                        <NeutralButton {...actionButtonTwoProps} />
+                        <NeutralButton
+                            shape={ButtonShape.Round}
+                            {...actionButtonTwoProps}
+                        />
                     )}
                     {actionButtonOneProps && (
-                        <NeutralButton {...actionButtonOneProps} />
+                        <NeutralButton
+                            shape={ButtonShape.Round}
+                            {...actionButtonOneProps}
+                        />
                     )}
                     {closable && (
                         <NeutralButton
                             iconProps={{ path: closeIcon }}
                             ariaLabel={'Close'}
                             onClick={onClose}
+                            shape={ButtonShape.Round}
                             {...closeButtonProps}
                         />
                     )}
@@ -175,11 +201,19 @@ export const Panel = React.forwardRef<PanelRef, PanelProps>(
             }
 
             if (['left', 'right'].includes(placement)) {
-                return {
-                    transform: `translateX(${
-                        placement === 'left' ? -distance : distance
-                    }px)`,
-                };
+                if (htmlDir === 'rtl') {
+                    return {
+                        transform: `translateX(${
+                            placement === 'right' ? -distance : distance
+                        }px)`,
+                    };
+                } else {
+                    return {
+                        transform: `translateX(${
+                            placement === 'left' ? -distance : distance
+                        }px)`,
+                    };
+                }
             } else if (['top', 'bottom'].includes(placement)) {
                 return {
                     transform: `translateY(${
@@ -214,27 +248,29 @@ export const Panel = React.forwardRef<PanelRef, PanelProps>(
 
         const getPanel = (): JSX.Element => (
             <PanelContext.Provider value={operations}>
-                <div
-                    {...rest}
-                    tabIndex={-1}
-                    ref={containerRef}
-                    className={panelBackdropClasses}
-                    onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-                        maskClosable && onClose(e);
-                    }}
-                    aria-hidden={!visible}
-                >
+                <NoFormStyle status override>
                     <div
-                        ref={panelRef}
-                        className={panelClasses}
-                        onClick={stopPropagation}
-                        style={getPanelStyle()}
+                        {...rest}
+                        tabIndex={-1}
+                        ref={containerRef}
+                        className={panelBackdropClasses}
+                        onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                            maskClosable && onClose(e);
+                        }}
+                        aria-hidden={!visible}
                     >
-                        {getHeader()}
-                        {getBody()}
-                        {getFooter()}
+                        <div
+                            ref={panelRef}
+                            className={panelClasses}
+                            onClick={stopPropagation}
+                            style={getPanelStyle()}
+                        >
+                            {getHeader()}
+                            {getBody()}
+                            {getFooter()}
+                        </div>
                     </div>
-                </div>
+                </NoFormStyle>
             </PanelContext.Provider>
         );
 

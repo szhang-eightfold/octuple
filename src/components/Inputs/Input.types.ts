@@ -1,9 +1,9 @@
 import React, { Ref, FormEventHandler } from 'react';
-import { Placement, Strategy } from '@floating-ui/react-dom';
 import { IconName, IconProps } from '../Icon';
 import { LabelProps } from '../Label';
-import { TooltipTheme } from '../Tooltip';
 import { OcBaseProps } from '../OcBase';
+import type { InputStatus } from '../../shared/utilities';
+import { ConfigContextProps, Shape, Size } from '../ConfigProvider';
 
 export enum TextInputIconAlign {
     Left = 'left',
@@ -39,13 +39,13 @@ export interface InputIconProps extends Omit<IconProps, 'path'> {
      */
     alt?: string;
     /**
-     * The optional icon svg path name.
-     */
-    path?: IconName;
-    /**
      * The icon image source url.
      */
     imageSrc?: string;
+    /**
+     * The optional icon svg path name.
+     */
+    path?: IconName;
 }
 
 export interface InputIconButtonProps {
@@ -88,76 +88,26 @@ export interface InputIconButtonProps {
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-export interface InputLabelIconButtonProps {
-    /**
-     * Allows focus on the label icon button when it's disabled.
-     */
-    allowDisabledFocus?: boolean;
-    /**
-     * The label icon button aria-label.
-     * @default false
-     */
-    ariaLabel?: string;
-    /**
-     * The label icon button disabled state.
-     * @default false
-     */
-    disabled?: boolean;
-    /**
-     * The label icon button props.
-     */
-    iconProps?: IconProps;
-    /**
-     * The label icon button id.
-     */
-    id?: string;
-    /**
-     * The label icon button onClick event handler.
-     */
-    onClick?: React.MouseEventHandler<HTMLButtonElement>;
-    /**
-     * The label icon button is shown.
-     * @default false
-     */
-    show?: boolean;
-    /**
-     * Content to show on the tooltip
-     */
-    toolTipContent?: React.ReactNode;
-    /**
-     * Theme of the tooltip
-     * @default light
-     */
-    toolTipTheme?: TooltipTheme;
-    /**
-     * Placement of the tooltip
-     * @default top
-     */
-    toolTipPlacement?: Placement;
-    /**
-     * Positioning strategy for the tooltip
-     * @default absolute
-     */
-    toolTipPositionStrategy?: Strategy;
-}
-
 export interface SearchBoxProps
     extends Omit<InputProps<HTMLInputElement>, 'htmlType'> {
-    /**
-     * The search box value.
-     */
-    value?: string;
-
     /**
      * Form onsubmit event handler.
      */
     onSubmit?: FormEventHandler<HTMLFormElement | HTMLInputElement>;
+    /**
+     * The search box value.
+     */
+    value?: string;
 }
 
 export interface TextAreaProps
     extends Omit<
         InputProps<HTMLTextAreaElement>,
-        'clearButtonAriaLabel' | 'iconProps' | 'iconButtonProps' | 'alignIcon'
+        | 'clearable'
+        | 'clearButtonAriaLabel'
+        | 'iconProps'
+        | 'iconButtonProps'
+        | 'alignIcon'
     > {
     /**
      * The text area is expandable.
@@ -222,12 +172,6 @@ export interface InputProps<T>
      */
     alignIcon?: TextInputIconAlign;
     /**
-     * option to show the clear input button.
-     * default is true for backward compatibility
-     * @default true
-     */
-    clearable?: boolean;
-    /**
      * Allows focus on the input when it's disabled.
      * @default false
      */
@@ -242,6 +186,16 @@ export interface InputProps<T>
      */
     autoFocus?: boolean;
     /**
+     * option to show the clear input button.
+     * default is true for backward compatibility
+     * @default true
+     */
+    clearable?: boolean;
+    /**
+     * Configure how contextual props are consumed
+     */
+    configContextProps?: ConfigContextProps;
+    /**
      * The input clear button aria label text.
      */
     clearButtonAriaLabel?: string;
@@ -251,13 +205,18 @@ export interface InputProps<T>
      */
     disabled?: boolean;
     /**
-     * The input icon props.
+     * The input is a form item.
+     * @default false
      */
-    iconProps?: InputIconProps;
+    formItemInput?: boolean;
     /**
      * The input icon button props.
      */
     iconButtonProps?: InputIconButtonProps;
+    /**
+     * The input icon props.
+     */
+    iconProps?: InputIconProps;
     /**
      * The input id.
      */
@@ -268,7 +227,7 @@ export interface InputProps<T>
      */
     inline?: boolean;
     /**
-     * Width of the tooltip
+     * Width of the input
      * @default fitContent
      */
     inputWidth?: TextInputWidth;
@@ -311,20 +270,24 @@ export interface InputProps<T>
      */
     placeholder?: string;
     /**
+     * input readonly.
+     * @default false
+     */
+    readonly?: boolean;
+    /**
      * Shape of the input.
      * @default TextInputShape.Pill
      */
-    shape?: TextInputShape;
+    shape?: TextInputShape | Shape;
     /**
      * The input size.
-     * @default Flex
+     * @default TextInputSize.Medium
      */
-    size?: TextInputSize;
+    size?: TextInputSize | Size;
     /**
-     * Theme of the input.
-     * @default TextInputTheme.light
+     * the validation status.
      */
-    theme?: TextInputTheme;
+    status?: InputStatus;
     /**
      * The value of the input.
      */
@@ -334,9 +297,4 @@ export interface InputProps<T>
      * @default 10
      */
     waitInterval?: number;
-    /**
-     * input readonly.
-     * @default false
-     */
-    readonly?: boolean;
 }

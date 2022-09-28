@@ -81,18 +81,57 @@
     }
 
     .label-icon-button {
-        border-radius: 100%;
         box-sizing: border-box;
         border-width: 1px;
-        height: 16px;
-        padding: 0;
+    }
+}
 
-        &:active,
-        &:focus-visible {
-            background-color: transparent;
-            outline: 2px solid var(--primary-color-40);
-            outline-offset: -2px;
-            padding: 0;
+.field-label-rtl {
+    &.large.inline {
+        margin-left: $space-l;
+        margin-right: unset;
+    }
+
+    &.medium.inline {
+        margin-left: $space-m;
+        margin-right: unset;
+    }
+
+    &.small.inline {
+        margin-left: $space-s;
+        margin-right: unset;
+    }
+
+    .field-label-icon-button {
+        margin-left: unset;
+        margin-right: 4px;
+
+        &.large {
+            margin-left: unset;
+            margin-right: 8px;
+        }
+
+        &.medium {
+            margin-left: unset;
+            margin-right: 4px;
+        }
+
+        &.small {
+            margin-left: unset;
+            margin-right: 4px;
+        }
+    }
+}
+
+:global(.focus-visible) {
+    .field-label-icon-button {
+        .label-icon-button {
+            &:focus-visible {
+                background-color: transparent;
+                outline: 2px solid var(--primary-color-40);
+                outline-offset: -2px;
+                padding: 0;
+            }
         }
     }
 }

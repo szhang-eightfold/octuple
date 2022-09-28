@@ -1,10 +1,25 @@
+$input-padding-horizontal: 8px;
+$multi-select-count-offset: 54px;
+
+// Export values for typescript consumption.
+:export {
+    inputPaddingHorizontal: strip-units($input-padding-horizontal);
+    multiSelectCountOffset: strip-units($multi-select-count-offset);
+}
+
 .select-wrapper {
     font-family: $octuple-font-family;
     position: relative;
     width: 100%;
 
+    // The minimum width required to ensure multi-select pills have enough room for 1 pill + the count
+    min-width: 256px;
+
+    &-disabled {
+        cursor: not-allowed;
+    }
+
     .select-dropdown-overlay {
-        width: 400px;
         padding: 0;
 
         .select-spinner {
@@ -34,7 +49,8 @@
     }
 
     .multi-select-pill {
-        max-width: 96px;
+        margin-right: $space-xs;
+        max-width: 144px;
         text-align: center;
         display: flex;
         justify-content: center;
@@ -42,12 +58,12 @@
 
         span {
             @include text-overflow;
-            max-width: 80px;
+            max-width: 128px;
         }
     }
 
     .multi-select-count {
-        margin-left: $space-xs;
+        margin-right: $space-xs;
     }
 
     .selected-option {
@@ -75,6 +91,23 @@
             .multi-select-pill {
                 padding: 2px 12px;
             }
+        }
+    }
+
+    &-rtl {
+        .multi-select-pills {
+            left: $space-xxl;
+            right: $space-xs;
+        }
+
+        .multi-select-pill {
+            margin-left: $space-xs;
+            margin-right: 0;
+        }
+
+        .multi-select-count {
+            margin-left: $space-xs;
+            margin-right: 0;
         }
     }
 }

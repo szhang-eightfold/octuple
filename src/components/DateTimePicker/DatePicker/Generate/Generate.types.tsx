@@ -1,6 +1,7 @@
 import type { Component, ComponentClass, ForwardedRef } from 'react';
 import type {
     DataPickerPlacement,
+    DatePickerShape,
     DatePickerSize,
     Locale as OcPickerLocale,
     OcPickerBaseProps,
@@ -13,24 +14,53 @@ import type {
 import type { TimePickerLocale } from '../../TimePicker/TimePicker.types';
 import PickerButton from '../PickerButton';
 import type { InputStatus } from '../../../../shared/utilities';
+import { Shape, Size } from '../../../ConfigProvider';
 
 type InjectDefaultProps<Props> = Omit<
     Props,
     'locale' | 'generateConfig' | 'hideHeader' | 'components'
 > & {
-    locale?: PickerLocale;
-    size?: DatePickerSize;
-    popupPlacement?: DataPickerPlacement;
+    /**
+     * Determines if the picker has a border style.
+     */
     bordered?: boolean;
-    status?: InputStatus;
+    /**
+     * Localization configuration.
+     */
+    locale?: PickerLocale;
+    /**
+     * The picker popup placement.
+     */
+    popupPlacement?: DataPickerPlacement;
+    /**
+     * The picker shape.
+     */
+    shape?: DatePickerShape | Shape;
+    /**
+     * Enables time selection partial.
+     */
     showTime?: any;
+    /**
+     * The picker size.
+     */
+    size?: DatePickerSize | Size;
+    /**
+     * The picker validation status.
+     */
+    status?: InputStatus;
 };
 
 export const Components = { button: PickerButton, rangeItem: PickerButton };
 
 export interface CommonPickerMethods {
-    focus: () => void;
+    /**
+     * Remove focus.
+     */
     blur: () => void;
+    /**
+     * Get focus.
+     */
+    focus: () => void;
 }
 
 export interface PickerComponentClass<P = {}, S = unknown>
@@ -53,22 +83,64 @@ export type PickerLocale = {
 } & AdditionalPickerLocaleProps;
 
 export type AdditionalPickerLocaleProps = {
+    /**
+     * The date format.
+     */
     dateFormat?: string;
+    /**
+     * The date time format.
+     */
     dateTimeFormat?: string;
-    weekFormat?: string;
+    /**
+     * The month format.
+     */
     monthFormat?: string;
+    /**
+     * The week format.
+     */
+    weekFormat?: string;
 };
 
 export type AdditionalPickerLocaleLangProps = {
+    /**
+     * The picker input placeholder text.
+     */
     placeholder: string;
+    /**
+     * The year picker input placeholder text.
+     */
     yearPlaceholder?: string;
+    /**
+     * The quarter picker input placeholder text.
+     */
     quarterPlaceholder?: string;
+    /**
+     * The month picker input placeholder text.
+     */
     monthPlaceholder?: string;
+    /**
+     * The week picker input placeholder text.
+     */
     weekPlaceholder?: string;
+    /**
+     * The year range picker inputs placeholder text.
+     */
     rangeYearPlaceholder?: [string, string];
+    /**
+     * The quarter range picker inputs placeholder text.
+     */
     rangeQuarterPlaceholder?: [string, string];
+    /**
+     * The month range picker inputs placeholder text.
+     */
     rangeMonthPlaceholder?: [string, string];
+    /**
+     * The week range picker inputs placeholder text.
+     */
     rangeWeekPlaceholder?: [string, string];
+    /**
+     * The range picker inputs placeholder text.
+     */
     rangePlaceholder?: [string, string];
 };
 

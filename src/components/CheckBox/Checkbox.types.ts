@@ -1,11 +1,18 @@
 import React from 'react';
 import { OcBaseProps } from '../OcBase';
+import { ConfigContextProps, Size } from '../ConfigProvider';
 
 export type CheckboxValueType = string | number;
 
 export enum LabelPosition {
     End = 'end',
     Start = 'start',
+}
+
+export enum LabelAlign {
+    Start = 'start',
+    Center = 'center',
+    End = 'end',
 }
 
 export enum SelectorSize {
@@ -29,6 +36,10 @@ export interface CheckboxProps extends OcBaseProps<HTMLInputElement> {
      */
     checked?: boolean;
     /**
+     * Configure how contextual props are consumed
+     */
+    configContextProps?: ConfigContextProps;
+    /**
      * The input checkbox default checked value.
      */
     defaultChecked?: boolean;
@@ -38,6 +49,11 @@ export interface CheckboxProps extends OcBaseProps<HTMLInputElement> {
      */
     disabled?: boolean;
     /**
+     * The checkbox is a form item.
+     * @default false
+     */
+    formItemInput?: boolean;
+    /**
      * The checkbox input name.
      */
     name?: string;
@@ -45,6 +61,11 @@ export interface CheckboxProps extends OcBaseProps<HTMLInputElement> {
      * The label of the checkbox.
      */
     label?: React.ReactNode;
+    /**
+     * The vertical placement of the label.
+     * @default LabelAlign.Center
+     */
+    labelAlign?: LabelAlign;
     /**
      * The label position of the checkbox.
      * @default LabelPosition.End
@@ -58,7 +79,7 @@ export interface CheckboxProps extends OcBaseProps<HTMLInputElement> {
      * The checkbox size.
      * @default SelectorSize.Medium
      */
-    size?: SelectorSize;
+    size?: SelectorSize | Size;
     /**
      * The Checkbox UI is toggle.
      * @default false
@@ -81,14 +102,28 @@ export interface CheckboxGroupProps
      */
     ariaLabel?: string;
     /**
+     * Configure how contextual props are consumed
+     */
+    configContextProps?: ConfigContextProps;
+    /**
      * The checkbox group disabled state.
      * @default false
      */
     disabled?: boolean;
     /**
-     * The array of items for the radio group.
+     * The checkbox group is a form item.
+     * @default false
+     */
+    formItemInput?: boolean;
+    /**
+     * The array of items for the checkbox group.
      */
     items?: CheckboxProps[];
+    /**
+     * The vertical placement of the label.
+     * @default LabelAlign.Center
+     */
+    labelAlign?: LabelAlign;
     /**
      * The label position of the checkboxes.
      * @default LabelPosition.End

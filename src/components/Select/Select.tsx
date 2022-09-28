@@ -1,5 +1,14 @@
-import React, { FC, useEffect, useState, Ref } from 'react';
-
+import React, {
+    FC,
+    useContext,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState,
+    Ref,
+} from 'react';
+import DisabledContext, { Disabled } from '../ConfigProvider/DisabledContext';
+import { ShapeContext, Shape, SizeContext, Size } from '../ConfigProvider';
 import { mergeClasses } from '../../shared/utilities';
 import { Dropdown } from '../Dropdown';
 import { Menu } from '../Menu';
@@ -22,38 +31,54 @@ import {
 import { Spinner, SpinnerSize } from '../Spinner';
 import { Breakpoints, useMatchMedia } from '../../hooks/useMatchMedia';
 import { Tooltip, TooltipTheme } from '../Tooltip';
+import { FormItemInputContext } from '../Form/Context';
+import { ResizeObserver } from '../../shared/ResizeObserver/ResizeObserver';
+import { useMaxVisibleSections } from '../../hooks/useMaxVisibleSections';
+import { useCanvasDirection } from '../../hooks/useCanvasDirection';
 
 import styles from './select.module.scss';
+
+const inputPaddingHorizontal: number = +styles.inputPaddingHorizontal;
+const multiSelectCountOffset: number = +styles.multiSelectCountOffset;
 
 export const Select: FC<SelectProps> = React.forwardRef(
     (
         {
             classNames,
             clearable = false,
+            configContextProps = {
+                noDisabledContext: false,
+                noShapeContext: false,
+                noSizeContext: false,
+            },
             defaultValue,
+            disabled = false,
             dropdownProps = {},
             emptyText = 'No match found.',
             filterable = false,
+            filterOption = null,
+            formItemInput = false,
+            id,
             inputWidth = TextInputWidth.fill,
             isLoading,
             loadOptions,
             menuProps = {},
             multiple = false,
-            textInputProps = {},
+            onClear,
             onOptionsChange,
             options: _options = [],
             pillProps = {},
             placeholder = 'Select',
             shape = SelectShape.Rectangle,
-            size = SelectSize.Flex,
+            size = SelectSize.Medium,
             spinner = (
                 <Spinner
                     classNames={styles.selectSpinner}
                     size={SpinnerSize.Small}
                 />
             ),
-            filterOption = null,
             style,
+            textInputProps = {},
             'data-test-id': dataTestId,
         },
         ref: Ref<HTMLDivElement>
@@ -62,6 +87,14 @@ export const Select: FC<SelectProps> = React.forwardRef(
         const mediumScreenActive: boolean = useMatchMedia(Breakpoints.Medium);
         const smallScreenActive: boolean = useMatchMedia(Breakpoints.Small);
         const xSmallScreenActive: boolean = useMatchMedia(Breakpoints.XSmall);
+
+        const htmlDir: string = useCanvasDirection();
+
+        const [dropdownWidth, setDropdownWidth] = useState(0);
+        const [selectWidth, setSelectWidth] = useState(0);
+
+        const inputRef = useRef<HTMLInputElement>(null);
+        const pillRefs = useRef<HTMLElement[]>([]);
 
         const [dropdownVisible, setDropdownVisibility] =
             useState<boolean>(false);
@@ -75,14 +108,44 @@ export const Select: FC<SelectProps> = React.forwardRef(
         );
         const [searchQuery, setSearchQuery] = useState<string>('');
 
+        const { isFormItemInput } = useContext(FormItemInputContext);
+        const mergedFormItemInput: boolean = isFormItemInput || formItemInput;
+
+        const contextuallyDisabled: Disabled = useContext(DisabledContext);
+        const mergedDisabled: boolean = configContextProps.noDisabledContext
+            ? disabled
+            : contextuallyDisabled || disabled;
+
+        const contextuallyShaped: Shape = useContext(ShapeContext);
+        const mergedShape: SelectShape | Shape =
+            configContextProps.noShapeContext
+                ? shape
+                : contextuallyShaped || shape;
+
+        const contextuallySized: Size = useContext(SizeContext);
+        const mergedSize: SelectSize | Size = configContextProps.noSizeContext
+            ? size
+            : contextuallySized || size;
+
         const getSelectedOptions = (): SelectOption['value'][] => {
             return options
                 .filter((option: SelectOption) => option.selected)
                 .map((option: SelectOption) => option.value);
         };
 
+        const { count, filled, width } = useMaxVisibleSections(
+            inputRef,
+            pillRefs,
+            168,
+            8,
+            1,
+            getSelectedOptions().length
+        );
+
         useEffect(() => {
-            const selected = options.filter((option) => option.selected);
+            const selected: SelectOption[] = options.filter(
+                (opt: SelectOption) => opt.selected
+            );
             setOptions(
                 _options.map((option: SelectOption, index: number) => ({
                     selected: !!selected.find(
@@ -100,10 +163,11 @@ export const Select: FC<SelectProps> = React.forwardRef(
         }, [getSelectedOptions().join('')]);
 
         useEffect(() => {
-            const updatedOptions = options.map((opt) => ({
+            const updatedOptions = options.map((opt: SelectOption) => ({
                 ...opt,
                 selected:
-                    (defaultValue && opt.value === defaultValue) ||
+                    (defaultValue !== undefined &&
+                        opt.value === defaultValue) ||
                     opt.selected,
             }));
             setOptions(updatedOptions);
@@ -111,12 +175,13 @@ export const Select: FC<SelectProps> = React.forwardRef(
 
         const toggleOption = (option: SelectOption): void => {
             setSearchQuery('');
-            const updatedOptions = options.map((opt) => {
+            const updatedOptions = options.map((opt: SelectOption) => {
                 const defaultState = multiple ? opt.selected : false;
                 const selected =
                     opt.value === option.value ? !opt.selected : defaultState;
                 return {
                     ...opt,
+                    hideOption: false,
                     selected: selected,
                 };
             });
@@ -125,37 +190,69 @@ export const Select: FC<SelectProps> = React.forwardRef(
 
         const onInputClear = (): void => {
             setSearchQuery('');
-            setOptions(
-                options.map((opt) => ({
-                    ...opt,
-                    selected: false,
-                }))
-            );
+            if (filterable && multiple && dropdownVisible) {
+                setOptions(
+                    options.map((opt: SelectOption) => ({
+                        ...opt,
+                        hideOption: false,
+                    }))
+                );
+            } else if (filterable) {
+                setOptions(
+                    options.map((opt: SelectOption) => ({
+                        ...opt,
+                        hideOption: false,
+                        selected: false,
+                    }))
+                );
+            } else {
+                setOptions(
+                    options.map((opt: SelectOption) => ({
+                        ...opt,
+                        selected: false,
+                    }))
+                );
+            }
+            onClear?.();
         };
 
         const onInputChange = (
             event: React.ChangeEvent<HTMLInputElement>
         ): void => {
             const { target } = event;
-            const value = target?.value?.toLowerCase();
+            const value: string = target?.value?.toLowerCase();
             setSearchQuery(value);
             if (loadOptions) {
                 return loadOptions(value);
             }
             if (value) {
                 setOptions(
-                    options.map((option) => ({
-                        ...option,
+                    options.map((opt: SelectOption) => ({
+                        ...opt,
                         hideOption: filterOption
-                            ? !filterOption(option, value)
-                            : !option.text.toLowerCase().includes(value),
+                            ? !filterOption(opt, value)
+                            : !opt.text.toLowerCase().includes(value),
                     }))
                 );
             } else {
                 setSearchQuery('');
+                // When not in multiple mode and the value is empty
+                // deselect and execute onClear.
                 setOptions(
-                    options.map((option) => ({ ...option, hideOption: false }))
+                    options.map((opt: SelectOption) => {
+                        const selected: boolean = multiple
+                            ? opt.selected
+                            : false;
+                        return {
+                            ...opt,
+                            hideOption: false,
+                            selected: selected,
+                        };
+                    })
                 );
+                if (!multiple) {
+                    onClear?.();
+                }
             }
         };
 
@@ -190,34 +287,35 @@ export const Select: FC<SelectProps> = React.forwardRef(
             styles.selectWrapper,
             {
                 [styles.selectSmall]:
-                    size === SelectSize.Flex && largeScreenActive,
+                    mergedSize === SelectSize.Flex && largeScreenActive,
             },
             {
                 [styles.selectMedium]:
-                    size === SelectSize.Flex && mediumScreenActive,
+                    mergedSize === SelectSize.Flex && mediumScreenActive,
             },
             {
                 [styles.selectMedium]:
-                    size === SelectSize.Flex && smallScreenActive,
+                    mergedSize === SelectSize.Flex && smallScreenActive,
             },
             {
                 [styles.selectLarge]:
-                    size === SelectSize.Flex && xSmallScreenActive,
+                    mergedSize === SelectSize.Flex && xSmallScreenActive,
             },
-            { [styles.selectLarge]: size === SelectSize.Large },
-            { [styles.selectMedium]: size === SelectSize.Medium },
-            { [styles.selectSmall]: size === SelectSize.Small },
+            { [styles.selectLarge]: mergedSize === SelectSize.Large },
+            { [styles.selectMedium]: mergedSize === SelectSize.Medium },
+            { [styles.selectSmall]: mergedSize === SelectSize.Small },
+            { [styles.selectWrapperRtl]: htmlDir === 'rtl' },
+            { [styles.selectWrapperDisabled]: mergedDisabled },
+            { ['in-form-item']: mergedFormItemInput },
             classNames,
         ]);
 
-        const showPills = () => {
-            const selected = options.filter((opt) => opt.selected);
-            const selectedCount = selected.length;
-            return (
-                selectedCount !== 0 &&
-                !(filterable && dropdownVisible) &&
-                multiple
+        const showPills = (): boolean => {
+            const selected: SelectOption[] = options.filter(
+                (opt: SelectOption) => opt.selected
             );
+            const selectedCount: number = selected.length;
+            return selectedCount !== 0 && multiple;
         };
 
         const getPillSize = (): PillSize => {
@@ -234,60 +332,102 @@ export const Select: FC<SelectProps> = React.forwardRef(
             return pillSize;
         };
 
-        const selectSizeToPillSizeMap = new Map<SelectSize, PillSize>([
+        const selectSizeToPillSizeMap = new Map<SelectSize | Size, PillSize>([
             [SelectSize.Flex, getPillSize()],
             [SelectSize.Large, PillSize.Large],
             [SelectSize.Medium, PillSize.Medium],
             [SelectSize.Small, PillSize.Small],
         ]);
 
-        // TODO: Use ConditionalWrapper using a custom hook to determine when ellipsis is active
-        // Because the option will not yet be rendered this may need to be spoofed in the hook
-        // Also need a better way to determine the number of Pills shown before moreOptionsCount.
-        const getPills = () => {
-            const selected = options.filter((opt) => opt.selected);
-            const selectedCount = selected.length;
-            const moreOptionsCount = selectedCount - 1;
-            return (
-                <div className={styles.multiSelectPills}>
+        const isPillEllipsisActive = (element: HTMLElement) => {
+            const labelElement: HTMLSpanElement =
+                element.firstElementChild as HTMLSpanElement;
+            return labelElement?.offsetWidth < labelElement?.scrollWidth;
+        };
+
+        const getPills = (): JSX.Element => {
+            const selected: SelectOption[] = options.filter(
+                (opt: SelectOption) => opt.selected
+            );
+
+            const selectedCount: number = selected.length;
+            const pills: React.ReactElement[] = [];
+            let moreOptionsCount: number = selectedCount;
+
+            // TODO: Mutate Array based on order of selection.
+            selected.forEach((value: SelectOption, index: number) => {
+                pills.push(
                     <Tooltip
                         classNames={styles.selectTooltip}
-                        content={selected[0].text}
+                        content={value.text}
+                        disabled={
+                            !isPillEllipsisActive(
+                                document?.getElementById(value.id)
+                            )
+                        }
+                        placement={'top'}
                         theme={TooltipTheme.dark}
                     >
                         <Pill
-                            id={selected[0].id}
+                            ref={(ref) => (pillRefs.current[index] = ref)}
+                            id={value.id}
                             classNames={pillClasses}
-                            label={selected[0].text}
-                            onClose={() => toggleOption(selected[0])}
+                            disabled={mergedDisabled}
+                            label={value.text}
+                            onClose={() => toggleOption(value)}
                             size={selectSizeToPillSizeMap.get(size)}
                             theme={'blueGreen'}
                             type={PillType.closable}
+                            style={{
+                                visibility:
+                                    index < count ? 'visible' : 'hidden',
+                            }}
                             {...pillProps}
                         />
                     </Tooltip>
-                    {moreOptionsCount ? (
+                );
+                if (pills.length === count && filled) {
+                    pills.push(
                         <Pill
                             classNames={countPillClasses}
-                            label={'+' + moreOptionsCount}
+                            disabled={mergedDisabled}
+                            label={'+' + (moreOptionsCount - count)}
                             theme={'blueGreen'}
-                            size={selectSizeToPillSizeMap.get(size)}
+                            size={selectSizeToPillSizeMap.get(mergedSize)}
                             {...pillProps}
                         />
-                    ) : null}
-                </div>
-            );
+                    );
+                }
+            });
+
+            return <div className={styles.multiSelectPills}>{pills}</div>;
         };
 
-        const OptionMenu = ({ options }: { options: SelectOption[] }) => {
+        const getSelectedOptionText = (): string => {
+            if (multiple) {
+                return searchQuery;
+            }
+            const selectedOption = options
+                .filter((opt: SelectOption) => opt.selected)
+                .map((opt: SelectOption) => opt.text)
+                .join(', ')
+                .toLocaleString();
+            return selectedOption;
+        };
+
+        const OptionMenu = ({
+            options,
+        }: {
+            options: SelectOption[];
+        }): JSX.Element => {
             const filteredOptions = options.filter(
-                (option) => !option.hideOption
+                (opt: SelectOption) => !opt.hideOption
             );
             const updatedItems: SelectOption[] = filteredOptions.map(
-                ({ hideOption, ...option }) => ({
-                    ...option,
+                ({ hideOption, ...opt }) => ({
+                    ...opt,
                     classNames: mergeClasses([
-                        { [styles.selectedOption]: option.selected },
+                        { [styles.selectedOption]: opt.selected },
                     ]),
                 })
             );
@@ -298,7 +438,7 @@ export const Select: FC<SelectProps> = React.forwardRef(
                         items={updatedItems}
                         onChange={(value) => {
                             const option = updatedItems.find(
-                                (option) => option.value === value
+                                (opt: SelectOption) => opt.value === value
                             );
                             toggleOption(option);
                         }}
@@ -311,16 +451,26 @@ export const Select: FC<SelectProps> = React.forwardRef(
             }
         };
 
-        const getSelectedOptionText = () => {
-            if (showPills()) {
+        const getStyle = (): React.CSSProperties => {
+            if (filterable && multiple && dropdownVisible && showPills()) {
+                const paddingValue: number =
+                    width > 0
+                        ? filled
+                            ? width + multiSelectCountOffset
+                            : width + inputPaddingHorizontal
+                        : inputPaddingHorizontal;
+                if (htmlDir === 'rtl') {
+                    return {
+                        paddingRight: paddingValue,
+                    };
+                } else {
+                    return {
+                        paddingLeft: paddingValue,
+                    };
+                }
+            } else {
                 return undefined;
             }
-            const selectedOption = options
-                .filter((option: SelectOption) => option.selected)
-                .map((option: SelectOption) => option.text)
-                .join(', ')
-                .toLocaleString();
-            return selectedOption;
         };
 
         const selectInputProps: TextInputProps = {
@@ -328,76 +478,105 @@ export const Select: FC<SelectProps> = React.forwardRef(
             alignIcon: TextInputIconAlign.Right,
             clearable: clearable,
             inputWidth: inputWidth,
-            iconProps: {
-                path: IconName.mdiChevronDown,
-                rotate: dropdownVisible ? 180 : 0,
+            iconButtonProps: {
+                iconProps: {
+                    path: dropdownVisible
+                        ? IconName.mdiChevronUp
+                        : IconName.mdiChevronDown,
+                },
+                onClick: () => inputRef.current.click(),
             },
+            style: getStyle(),
             onClear: onInputClear,
             ...textInputProps,
         };
 
         const selectShapeToTextInputShapeMap = new Map<
-            SelectShape,
-            TextInputShape
+            SelectShape | Shape,
+            TextInputShape | Shape
         >([
             [SelectShape.Rectangle, TextInputShape.Rectangle],
             [SelectShape.Pill, TextInputShape.Pill],
             [SelectShape.Underline, TextInputShape.Underline],
         ]);
 
-        const selectSizeToTextInputSizeMap = new Map<SelectSize, TextInputSize>(
-            [
-                [SelectSize.Flex, TextInputSize.Flex],
-                [SelectSize.Large, TextInputSize.Large],
-                [SelectSize.Medium, TextInputSize.Medium],
-                [SelectSize.Small, TextInputSize.Small],
-            ]
-        );
+        const selectSizeToTextInputSizeMap = new Map<
+            SelectSize | Size,
+            TextInputSize | Size
+        >([
+            [SelectSize.Flex, TextInputSize.Flex],
+            [SelectSize.Large, TextInputSize.Large],
+            [SelectSize.Medium, TextInputSize.Medium],
+            [SelectSize.Small, TextInputSize.Small],
+        ]);
+
+        const updateLayout = (): void => {
+            // Ensure the minimum default width is 400
+            const dropdownDefaultWidth: number = 400;
+
+            if (!inputRef.current) {
+                return;
+            }
+
+            const inputWidth: number = inputRef.current?.offsetWidth;
+            let dropdownUpdatedWidth: number =
+                inputRef.current?.offsetWidth > dropdownDefaultWidth
+                    ? inputRef.current?.offsetWidth
+                    : dropdownDefaultWidth;
+
+            setSelectWidth(inputWidth);
+            setDropdownWidth(dropdownUpdatedWidth);
+        };
+
+        useLayoutEffect(() => {
+            updateLayout();
+        }, [dropdownWidth, selectWidth]);
 
         return (
-            <div
-                className={componentClasses}
-                style={style}
-                ref={ref}
-                data-test-id={dataTestId}
-            >
-                {showPills() ? getPills() : null}
-                <Dropdown
-                    {...dropdownProps}
-                    onVisibleChange={(isVisible) =>
-                        setDropdownVisibility(isVisible)
-                    }
-                    showDropdown={showDropdown}
-                    overlay={
-                        isLoading ? spinner : <OptionMenu options={options} />
-                    }
-                    classNames={dropdownWrapperClasses}
-                    dropdownClassNames={dropdownMenuOverlayClasses}
+            <ResizeObserver onResize={updateLayout}>
+                <div
+                    ref={ref}
+                    className={componentClasses}
+                    data-test-id={dataTestId}
+                    id={id}
+                    style={style}
                 >
-                    {filterable ? (
+                    {showPills() ? getPills() : null}
+                    <Dropdown
+                        width={dropdownWidth}
+                        {...dropdownProps}
+                        classNames={dropdownWrapperClasses}
+                        dropdownClassNames={dropdownMenuOverlayClasses}
+                        onVisibleChange={(isVisible) =>
+                            setDropdownVisibility(isVisible)
+                        }
+                        overlay={
+                            isLoading ? (
+                                spinner
+                            ) : (
+                                <OptionMenu options={options} />
+                            )
+                        }
+                        showDropdown={showDropdown}
+                        visible={dropdownVisible}
+                    >
                         <TextInput
+                            ref={inputRef}
                             {...selectInputProps}
-                            shape={selectShapeToTextInputShapeMap.get(shape)}
-                            size={selectSizeToTextInputSizeMap.get(size)}
-                            value={
-                                !dropdownVisible
-                                    ? getSelectedOptionText()
-                                    : undefined
-                            }
-                            onChange={onInputChange}
-                        />
-                    ) : (
-                        <TextInput
-                            {...selectInputProps}
-                            readonly
-                            shape={selectShapeToTextInputShapeMap.get(shape)}
-                            size={selectSizeToTextInputSizeMap.get(size)}
-                            value={getSelectedOptionText()}
                             classNames={styles.selectInput}
+                            disabled={mergedDisabled}
+                            formItemInput={mergedFormItemInput}
+                            onChange={filterable ? onInputChange : null}
+                            readonly={!filterable}
+                            shape={selectShapeToTextInputShapeMap.get(
+                                mergedShape
+                            )}
+                            size={selectSizeToTextInputSizeMap.get(mergedSize)}
+                            value={getSelectedOptionText()}
                         />
-                    )}
-                </Dropdown>
-            </div>
+                    </Dropdown>
+                </div>
+            </ResizeObserver>
         );
     }
 );

@@ -16,8 +16,6 @@
         font-family: $octuple-font-family;
         font-size: $text-font-size-5;
         font-weight: $text-font-weight-semibold;
-        margin-bottom: 1px;
-        margin-top: -1px;
 
         &.medium {
             font-size: $text-font-size-3;
@@ -84,6 +82,7 @@
     &.blue-violet {
         --bg: var(--blueviolet-color-20);
         --label: var(--blueviolet-color);
+        --hover-bg: var(--blueviolet-color-30);
     }
 
     &.violet {
@@ -104,7 +103,7 @@
         --hover-bg: var(--grey-color-30);
     }
 
-    &:hover {
+    &:hover:not(.tag-pills-disabled) {
         --bg: var(--hover-bg);
         --label: var(--hover-label);
     }
@@ -136,5 +135,29 @@
 
     .icon {
         margin-right: $space-xxs;
+    }
+
+    &-disabled {
+        cursor: not-allowed;
+        opacity: $disabled-alpha-value;
+    }
+
+    &-rtl {
+        .button,
+        .close-button {
+            margin: 0 $space-xxs 0 0;
+        }
+
+        .label + .button:not(:empty) {
+            border-left: unset;
+            padding-left: unset;
+            border-right: 1px solid var(--label);
+            padding-right: $space-xxs;
+        }
+
+        .icon {
+            margin-left: $space-xxs;
+            margin-right: unset;
+        }
     }
 }

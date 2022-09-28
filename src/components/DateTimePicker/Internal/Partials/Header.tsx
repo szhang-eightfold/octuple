@@ -3,6 +3,9 @@ import { HeaderProps } from './Partial.types';
 import PartialContext from '../PartialContext';
 import { ButtonSize, NeutralButton } from '../../../Button';
 import { IconName } from '../../../Icon';
+import { Size } from '../../../ConfigProvider';
+import { DatePickerSize } from '../OcPicker.types';
+import { useCanvasDirection } from '../../../../hooks/useCanvasDirection';
 
 import styles from '../ocpicker.module.scss';
 
@@ -20,14 +23,20 @@ export const Header = ({
     onPrev,
     onNext,
     children,
-    size = 'Small',
+    size = DatePickerSize.Medium,
 }: HeaderProps): JSX.Element => {
+    const htmlDir: string = useCanvasDirection();
+
     const { hideNextBtn, hidePrevBtn } = React.useContext(PartialContext);
 
-    const datePickerSizeToButtonSizeMap = new Map<typeof size, ButtonSize>([
-        ['Large', ButtonSize.Large],
-        ['Medium', ButtonSize.Medium],
-        ['Small', ButtonSize.Small],
+    const datePickerSizeToButtonSizeMap = new Map<
+        DatePickerSize | Size,
+        ButtonSize | Size
+    >([
+        [DatePickerSize.Flex, ButtonSize.Flex],
+        [DatePickerSize.Large, ButtonSize.Large],
+        [DatePickerSize.Medium, ButtonSize.Medium],
+        [DatePickerSize.Small, ButtonSize.Small],
     ]);
 
     return (
@@ -37,6 +46,7 @@ export const Header = ({
                     classNames={'picker-header-super-prev-btn'}
                     iconProps={{
                         path: superPrevIcon,
+                        rotate: htmlDir === 'rtl' ? 180 : 0,
                     }}
                     onClick={onSuperPrev}
                     size={datePickerSizeToButtonSizeMap.get(size)}
@@ -48,6 +58,7 @@ export const Header = ({
                     classNames={'picker-header-prev-btn'}
                     iconProps={{
                         path: prevIcon,
+                        rotate: htmlDir === 'rtl' ? 180 : 0,
                     }}
                     onClick={onPrev}
                     size={datePickerSizeToButtonSizeMap.get(size)}
@@ -60,6 +71,7 @@ export const Header = ({
                     classNames={'picker-header-next-btn'}
                     iconProps={{
                         path: nextIcon,
+                        rotate: htmlDir === 'rtl' ? 180 : 0,
                     }}
                     onClick={onNext}
                     size={datePickerSizeToButtonSizeMap.get(size)}
@@ -71,6 +83,7 @@ export const Header = ({
                     classNames={'picker-header-super-next-btn'}
                     iconProps={{
                         path: superNextIcon,
+                        rotate: htmlDir === 'rtl' ? 180 : 0,
                     }}
                     onClick={onSuperNext}
                     size={datePickerSizeToButtonSizeMap.get(size)}

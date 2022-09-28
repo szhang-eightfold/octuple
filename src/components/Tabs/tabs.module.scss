@@ -22,7 +22,7 @@
         &:first-child {
             padding-left: 0;
             .tab-indicator {
-                width: calc(100% - #{$space-xl / 2});
+                width: calc(100% - calc(#{$space-xl / 2}));
             }
         }
 
@@ -79,6 +79,28 @@
         // Use the ConfigProvider instead.
         &:focus-visible {
             outline: none;
+        }
+
+        &-rtl {
+            &:first-child {
+                padding-left: $space-m;
+                padding-right: 0;
+            }
+
+            .tab-indicator {
+                border-radius: $space-xxs 0 0 $space-xxs;
+            }
+
+            .badge,
+            .loader {
+                margin-left: unset;
+                margin-right: $space-xs;
+            }
+
+            .icon + .label:not(:empty) {
+                margin-left: unset;
+                margin-right: $space-xs;
+            }
         }
     }
 

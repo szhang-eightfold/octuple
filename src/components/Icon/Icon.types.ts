@@ -1,6 +1,5 @@
 import { IconName } from './mdi';
 import { IconProps as MdiIconProps } from '@mdi/react/dist/IconProps';
-import { OcBaseProps } from '../OcBase';
 
 export enum IconSize {
     Large = '24px',
@@ -10,17 +9,17 @@ export enum IconSize {
 }
 
 export interface IconProps
-    extends OcBaseProps<HTMLSpanElement>,
+    extends React.HTMLAttributes<HTMLSpanElement>,
         Omit<MdiIconProps, 'path'> {
-    /**
-     * The icon svg path name.
-     */
-    path?: IconName;
     /**
      * The icon is aria-hidden.
      * @default false
      */
     ariaHidden?: boolean;
+    /**
+     * Custom classnames of the component
+     */
+    classNames?: string;
     /**
      * The icon color.
      */
@@ -35,9 +34,17 @@ export interface IconProps
      */
     horizontal?: boolean;
     /**
+     * Name of the icon as defined in icomoon app
+     */
+    icomoonIconName?: string;
+    /**
      * The icon id.
      */
     id?: string;
+    /**
+     * The icon svg path name.
+     */
+    path?: IconName;
     /**
      * The icon aria role.
      * @default 'presentation'
@@ -59,6 +66,10 @@ export interface IconProps
      */
     spin?: boolean | number;
     /**
+     * Style of the icon wrapper
+     */
+    style?: React.CSSProperties;
+    /**
      * The icon title.
      */
     title?: string;
@@ -68,7 +79,7 @@ export interface IconProps
      */
     vertical?: boolean;
     /**
-     * Name of the icon as defined in icomoon app
+     * Unique id used to target element for testing
      */
-    icomoonIconName?: string;
+    'data-test-id'?: string;
 }

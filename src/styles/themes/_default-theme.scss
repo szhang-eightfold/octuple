@@ -168,6 +168,7 @@
     --border-color: #bec2ca;
     --text-primary-color: #1a212e;
     --text-secondary-color: #4f5666;
+    --text-tertiary-color: #69717f;
     --text-inverse-color: #fff;
     --success-color: #2b715f;
     --warning-color: #9d6309;
@@ -200,17 +201,23 @@
     --navbar-background: var(--primary-color-80);
     --navbar-text-color: var(--text-inverse-color);
     --navbar-text-hover-background: var(--navbar-background);
-    --navbar-text-hover-color: var(--navbar-text);
+    --navbar-text-hover-color: var(--navbar-text-color);
     /* ------ Navbar theme ------ */
 
     /* ------ Picker theme ------ */
     --picker-background-color: var(--background-color);
     --picker-foreground-color: var(--text-secondary-color);
-    --picker-border-color: var(--grey-color-20);
+    --picker-border-color: var(--border-color);
     --picker-border-color-active: var(--primary-color);
     --picker-cell-background-color: var(--background-color);
     --picker-cell-background-color-active: var(--primary-color-20);
-    --picker-cell-background-color-hover: var(--primary-color-20);
+    --picker-cell-background-color-hover: var(--accent-color-30);
+    --picker-cell-today-background-color: var(--accent-color-30);
+    --picker-cell-selected-background-color-active: var(--accent-color-30);
+    --picker-cell-range-start-background-color-hover: var(--accent-color-30);
+    --picker-cell-range-start-background-color-active: var(--accent-color-30);
+    --picker-cell-range-end-background-color-hover: var(--accent-color-30);
+    --picker-cell-range-end-background-color-active: var(--accent-color-30);
     --picker-cell-foreground-color: var(--text-secondary-color);
     --picker-cell-foreground-color-active: var(--primary-color);
     --picker-cell-foreground-color-hover: var(--primary-color);

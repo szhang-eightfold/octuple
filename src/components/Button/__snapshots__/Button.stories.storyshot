@@ -1,0 +1,576 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Storyshots Button Counter 1`] = `
+<button
+  aria-disabled={false}
+  aria-label="Primary Button"
+  className="my-btn-class button button-primary button-medium pill-shape icon-left"
+  data-test-id="my-btn-test-id"
+  defaultChecked={false}
+  disabled={false}
+  id="myButton"
+  style={Object {}}
+  type="button"
+>
+  <span>
+    <span
+      aria-hidden={true}
+      className="icon my-btn-icon icon-wrapper"
+      data-test-id="myButtonIconTestId"
+      id="myButtonIcon"
+      role="presentation"
+    >
+      <svg
+        role="presentation"
+        style={
+          Object {
+            "height": "20px",
+            "width": "20px",
+          }
+        }
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </svg>
+    </span>
+    <span
+      className="button-text-medium"
+    >
+      Primary Button
+      <span
+        className="badge counter button-text-medium"
+      >
+        8
+      </span>
+    </span>
+  </span>
+</button>
+`;
+
+exports[`Storyshots Button Default 1`] = `
+<button
+  aria-disabled={false}
+  aria-label="Default Button"
+  className="my-btn-class button button-default button-medium pill-shape icon-left"
+  data-test-id="my-btn-test-id"
+  defaultChecked={false}
+  disabled={false}
+  id="myButton"
+  style={Object {}}
+  type="button"
+>
+  <span>
+    <span
+      aria-hidden={true}
+      className="icon my-btn-icon icon-wrapper"
+      data-test-id="myButtonIconTestId"
+      id="myButtonIcon"
+      role="presentation"
+    >
+      <svg
+        role="presentation"
+        style={
+          Object {
+            "height": "20px",
+            "width": "20px",
+          }
+        }
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </svg>
+    </span>
+    <span
+      className="button-text-medium"
+    >
+      Default Button
+    </span>
+  </span>
+</button>
+`;
+
+exports[`Storyshots Button Floating Button 1`] = `
+<button
+  aria-disabled={false}
+  aria-label="Button"
+  className="my-btn-class button button-primary button-medium round-shape floating icon-left"
+  data-test-id="my-btn-test-id"
+  defaultChecked={false}
+  disabled={false}
+  id="myButton"
+  style={Object {}}
+  type="button"
+>
+  <span
+    aria-hidden={true}
+    className="icon my-btn-icon icon-wrapper"
+    data-test-id="myButtonIconTestId"
+    id="myButtonIcon"
+    role="presentation"
+  >
+    <svg
+      role="presentation"
+      style={
+        Object {
+          "height": "20px",
+          "width": "20px",
+        }
+      }
+      viewBox="0 0 24 24"
+    >
+      <path
+        d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"
+        style={
+          Object {
+            "fill": "currentColor",
+          }
+        }
+      />
+    </svg>
+  </span>
+</button>
+`;
+
+exports[`Storyshots Button Neutral 1`] = `
+<button
+  aria-disabled={false}
+  aria-label="Neutral Button"
+  className="my-btn-class button button-neutral button-medium pill-shape icon-left"
+  data-test-id="my-btn-test-id"
+  defaultChecked={false}
+  disabled={false}
+  id="myButton"
+  style={Object {}}
+  type="button"
+>
+  <span>
+    <span
+      aria-hidden={true}
+      className="icon my-btn-icon icon-wrapper"
+      data-test-id="myButtonIconTestId"
+      id="myButtonIcon"
+      role="presentation"
+    >
+      <svg
+        role="presentation"
+        style={
+          Object {
+            "height": "20px",
+            "width": "20px",
+          }
+        }
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </svg>
+    </span>
+    <span
+      className="button-text-medium"
+    >
+      Neutral Button
+    </span>
+  </span>
+</button>
+`;
+
+exports[`Storyshots Button Primary 1`] = `
+<button
+  aria-disabled={false}
+  aria-label="Primary Button"
+  className="my-btn-class button button-primary button-medium pill-shape icon-left"
+  data-test-id="my-btn-test-id"
+  defaultChecked={false}
+  disabled={false}
+  id="myButton"
+  style={Object {}}
+  type="button"
+>
+  <span>
+    <span
+      aria-hidden={true}
+      className="icon my-btn-icon icon-wrapper"
+      data-test-id="myButtonIconTestId"
+      id="myButtonIcon"
+      role="presentation"
+    >
+      <svg
+        role="presentation"
+        style={
+          Object {
+            "height": "20px",
+            "width": "20px",
+          }
+        }
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </svg>
+    </span>
+    <span
+      className="button-text-medium"
+    >
+      Primary Button
+    </span>
+  </span>
+</button>
+`;
+
+exports[`Storyshots Button Secondary 1`] = `
+<button
+  aria-disabled={false}
+  aria-label="Secondary Button"
+  className="my-btn-class button button-secondary button-medium pill-shape icon-left"
+  data-test-id="my-btn-test-id"
+  defaultChecked={false}
+  disabled={false}
+  id="myButton"
+  style={Object {}}
+  type="button"
+>
+  <span>
+    <span
+      aria-hidden={true}
+      className="icon my-btn-icon icon-wrapper"
+      data-test-id="myButtonIconTestId"
+      id="myButtonIcon"
+      role="presentation"
+    >
+      <svg
+        role="presentation"
+        style={
+          Object {
+            "height": "20px",
+            "width": "20px",
+          }
+        }
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </svg>
+    </span>
+    <span
+      className="button-text-medium"
+    >
+      Secondary Button
+    </span>
+  </span>
+</button>
+`;
+
+exports[`Storyshots Button Split 1`] = `
+Array [
+  <button
+    aria-disabled={false}
+    aria-label="Split Button"
+    className="my-btn-class button button-primary button-medium pill-shape split-left"
+    data-test-id="my-btn-test-id"
+    defaultChecked={false}
+    disabled={false}
+    id="myButton"
+    style={Object {}}
+    type="button"
+  >
+    <span
+      className="button-text-medium"
+    >
+      Split Button
+    </span>
+  </button>,
+  <button
+    aria-checked={false}
+    aria-disabled={false}
+    aria-pressed={false}
+    className="my-btn-class button button-primary button-medium pill-shape undefined split-button button-medium pill-shape split-right"
+    defaultChecked={false}
+    disabled={false}
+    type="button"
+  >
+    <span
+      aria-hidden={false}
+      className="icon icon-wrapper"
+      role="presentation"
+    >
+      <svg
+        role="presentation"
+        style={
+          Object {
+            "height": "20px",
+            "width": "20px",
+          }
+        }
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </svg>
+    </span>
+    <span
+      aria-hidden="true"
+      className="split-divider split-divider-medium split-divider-primary"
+    />
+  </button>,
+]
+`;
+
+exports[`Storyshots Button Split With Counter 1`] = `
+Array [
+  <button
+    aria-disabled={false}
+    aria-label="Split Button"
+    className="my-btn-class button button-primary button-medium pill-shape split-left"
+    data-test-id="my-btn-test-id"
+    defaultChecked={false}
+    disabled={false}
+    id="myButton"
+    style={Object {}}
+    type="button"
+  >
+    <span
+      className="button-text-medium"
+    >
+      Split Button
+      <span
+        className="badge counter button-text-medium"
+      >
+        8
+      </span>
+    </span>
+  </button>,
+  <button
+    aria-checked={false}
+    aria-disabled={false}
+    aria-pressed={false}
+    className="my-btn-class button button-primary button-medium pill-shape undefined split-button button-medium pill-shape split-right"
+    defaultChecked={false}
+    disabled={false}
+    type="button"
+  >
+    <span
+      aria-hidden={false}
+      className="icon icon-wrapper"
+      role="presentation"
+    >
+      <svg
+        role="presentation"
+        style={
+          Object {
+            "height": "20px",
+            "width": "20px",
+          }
+        }
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </svg>
+    </span>
+    <span
+      aria-hidden="true"
+      className="split-divider split-divider-medium split-divider-primary"
+    />
+  </button>,
+]
+`;
+
+exports[`Storyshots Button System UI 1`] = `
+<button
+  aria-disabled={false}
+  aria-label="System UI Button"
+  className="my-btn-class button button-system-ui button-medium pill-shape icon-left"
+  data-test-id="my-btn-test-id"
+  defaultChecked={false}
+  disabled={false}
+  id="myButton"
+  style={Object {}}
+  type="button"
+>
+  <span>
+    <span
+      aria-hidden={true}
+      className="icon my-btn-icon icon-wrapper"
+      data-test-id="myButtonIconTestId"
+      id="myButtonIcon"
+      role="presentation"
+    >
+      <svg
+        role="presentation"
+        style={
+          Object {
+            "height": "20px",
+            "width": "20px",
+          }
+        }
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </svg>
+    </span>
+    <span
+      className="button-text-medium"
+    >
+      System UI Button
+    </span>
+  </span>
+</button>
+`;
+
+exports[`Storyshots Button Toggle 1`] = `
+<button
+  aria-checked={false}
+  aria-disabled={false}
+  aria-label="Toggle Button"
+  aria-pressed={false}
+  className="my-btn-class button button-primary button-medium pill-shape icon-right"
+  data-test-id="my-btn-test-id"
+  defaultChecked={false}
+  disabled={false}
+  id="myButton"
+  style={Object {}}
+  type="button"
+>
+  <span>
+    <span
+      aria-hidden={true}
+      className="icon my-btn-icon icon-wrapper"
+      data-test-id="myButtonIconTestId"
+      id="myButtonIcon"
+      role="presentation"
+    >
+      <svg
+        role="presentation"
+        style={
+          Object {
+            "height": "20px",
+            "width": "20px",
+          }
+        }
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </svg>
+    </span>
+    <span
+      className="button-text-medium"
+    >
+      Toggle Button
+    </span>
+  </span>
+</button>
+`;
+
+exports[`Storyshots Button Toggle With Counter 1`] = `
+<button
+  aria-checked={false}
+  aria-disabled={false}
+  aria-label="Toggle Button"
+  aria-pressed={false}
+  className="my-btn-class button button-primary button-medium pill-shape icon-right"
+  data-test-id="my-btn-test-id"
+  defaultChecked={false}
+  disabled={false}
+  id="myButton"
+  style={Object {}}
+  type="button"
+>
+  <span>
+    <span
+      aria-hidden={true}
+      className="icon my-btn-icon icon-wrapper"
+      data-test-id="myButtonIconTestId"
+      id="myButtonIcon"
+      role="presentation"
+    >
+      <svg
+        role="presentation"
+        style={
+          Object {
+            "height": "20px",
+            "width": "20px",
+          }
+        }
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"
+          style={
+            Object {
+              "fill": "currentColor",
+            }
+          }
+        />
+      </svg>
+    </span>
+    <span
+      className="button-text-medium"
+    >
+      Toggle Button
+      <span
+        className="badge counter button-text-medium"
+      >
+        8
+      </span>
+    </span>
+  </span>
+</button>
+`;

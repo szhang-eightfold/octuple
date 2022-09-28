@@ -8,6 +8,7 @@ export type StackGap =
     | 'xs'
     | 's'
     | 'm'
+    | 'ml'
     | 'l'
     | 'xl'
     | 'xxl'
@@ -15,31 +16,6 @@ export type StackGap =
     | 'xxxl';
 
 type StackIntrinsicProps = {
-    /**
-     * Direction type - horizontal or vertical
-     */
-    direction?: StackDirection;
-
-    /**
-     * Space between the child elements
-     */
-    gap?: StackGap;
-
-    /**
-     * Wrap behaviour for the stack
-     */
-    wrap?: 'wrap' | 'nowrap' | 'wrap-reverse';
-
-    /**
-     * Enable stack as an inline element
-     */
-    inline?: boolean;
-
-    /**
-     * Assigns the stack 100% width
-     */
-    fullWidth?: boolean;
-
     /**
      * Align Items
      */
@@ -51,7 +27,22 @@ type StackIntrinsicProps = {
         | 'baseline'
         | 'initial'
         | 'inherit';
-
+    /**
+     * Direction type - horizontal or vertical
+     */
+    direction?: StackDirection;
+    /**
+     * Assigns the stack 100% width
+     */
+    fullWidth?: boolean;
+    /**
+     * Space between the child elements
+     */
+    gap?: StackGap;
+    /**
+     * Enable stack as an inline element
+     */
+    inline?: boolean;
     /**
      * Justify Content
      */
@@ -62,9 +53,14 @@ type StackIntrinsicProps = {
         | 'space-between'
         | 'space-around'
         | 'space-evenly';
+    /**
+     * Wrap behaviour for the stack
+     */
+    wrap?: 'wrap' | 'nowrap' | 'wrap-reverse';
 };
 
 export type StackBreakpoint = 'xsmall' | 'small' | 'medium' | 'large';
+
 export interface StackProps
     extends StackIntrinsicProps,
         OcBaseProps<HTMLDivElement> {

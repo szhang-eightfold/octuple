@@ -16,17 +16,26 @@
             cursor: not-allowed;
 
             & + label {
-                .checkmark {
-                    opacity: 50%;
-
-                    &.toggle {
-                        opacity: 50%;
-                    }
-                }
+                opacity: $disabled-alpha-value;
+                cursor: not-allowed;
             }
         }
 
         & + label {
+            &.align-start {
+                align-items: flex-start;
+                display: flex;
+            }
+
+            &.align-start .checkmark {
+                margin-top: $space-xxxs;
+            }
+
+            &.align-end {
+                align-items: flex-end;
+                display: flex;
+            }
+
             .checkmark {
                 border: $space-xxxs solid var(--grey-color-70);
                 border-radius: $corner-radius-xs;
@@ -430,6 +439,62 @@
 
         input:checked {
             cursor: not-allowed;
+        }
+    }
+
+    &-rtl {
+        .selector-label {
+            &-end {
+                margin-left: 0;
+                margin-right: $space-xs;
+            }
+
+            &-start {
+                margin-left: $space-xs;
+                margin-right: 0;
+            }
+        }
+
+        &-large {
+            .selector-label {
+                &-end {
+                    margin-left: 0;
+                    margin-right: $space-m;
+                }
+
+                &-start {
+                    margin-left: $space-m;
+                    margin-right: 0;
+                }
+            }
+        }
+
+        &-medium {
+            .selector-label {
+                &-end {
+                    margin-left: 0;
+                    margin-right: $space-xs;
+                }
+
+                &-start {
+                    margin-left: $space-xs;
+                    margin-right: 0;
+                }
+            }
+        }
+
+        &-small {
+            .selector-label {
+                &-end {
+                    margin-left: 0;
+                    margin-right: $space-xxs;
+                }
+
+                &-start {
+                    margin-left: $space-xxs;
+                    margin-right: 0;
+                }
+            }
         }
     }
 }

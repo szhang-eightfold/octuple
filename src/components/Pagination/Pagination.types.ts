@@ -98,6 +98,11 @@ export interface PaginationProps extends OcBaseProps<HTMLElement> {
      */
     quickPreviousIconButtonAriaLabel?: string;
     /**
+     * The Page change is controlled internally.
+     * @default true
+     */
+    selfControlled?: boolean;
+    /**
      * Pagination simplified mode.
      * @default false
      */

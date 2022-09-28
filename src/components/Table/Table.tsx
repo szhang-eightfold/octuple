@@ -30,7 +30,12 @@ import type {
     TableAction,
     TableProps,
 } from './Table.types';
-import { EMPTY_LIST, ColumnsType, TablePaginationConfig } from './Table.types';
+import {
+    EMPTY_LIST,
+    ColumnsType,
+    TablePaginationConfig,
+    TableSize,
+} from './Table.types';
 import useSelection, {
     SELECTION_ALL,
     SELECTION_COLUMN,
@@ -43,7 +48,7 @@ import type { FilterState } from './Hooks/useFilter';
 import useFilter, { getFilterData } from './Hooks/useFilter';
 import useTitleColumns from './Hooks/useTitleColumns';
 import renderExpandIcon from './ExpandIcon';
-import SizeContext from './Internal/Context/SizeContext';
+import { Size, SizeContext } from '../ConfigProvider';
 import Column from './Internal/Column';
 import ColumnGroup from './Internal/ColumnGroup';
 import { useBreakpoint } from '../../hooks/useBreakpoint';
@@ -95,7 +100,7 @@ function InternalTable<RecordType extends object = any>(
         selectionAllText,
         selectNoneText,
         showSorterTooltip = true,
-        size: customizeSize,
+        size = TableSize.Medium,
         sortDirections,
         style,
         triggerAscText,
@@ -137,9 +142,10 @@ function InternalTable<RecordType extends object = any>(
         'columns',
     ]) as TableProps<RecordType>;
 
-    const size = useContext(SizeContext);
+    const contextuallySized: Size = useContext(SizeContext);
+    const mergedSize = contextuallySized || size;
+
     const htmlDir: string = useCanvasDirection();
-    const mergedSize = customizeSize || size;
     const rawData: readonly RecordType[] = dataSource || EMPTY_LIST;
 
     const mergedExpandableConfig: ExpandableConfig<RecordType> = {
@@ -205,7 +211,18 @@ function InternalTable<RecordType extends object = any>(
                 pagination.onCurrentChange?.(
                     changeInfo.pagination!.currentPage!
                 );
-                pagination.onSizeChange?.(changeInfo.pagination!.pageSize!);
+
+                const pages: number[] = changeInfo.pagination!.pageSizes!;
+
+                if (pages) {
+                    for (let i: number = 0; i < pages.length; ++i) {
+                        pagination.onSizeChange?.(
+                            changeInfo.pagination!.pageSizes[i]
+                        );
+                    }
+                } else {
+                    pagination.onSizeChange?.(changeInfo.pagination!.pageSize!);
+                }
             }
         }
 
@@ -310,13 +327,18 @@ function InternalTable<RecordType extends object = any>(
     const [transformTitleColumns] = useTitleColumns(columnTitleProps);
 
     // ========================== Pagination ==========================
-    const onPaginationChange = (currentPage: number, pageSize: number) => {
+    const onPaginationChange = (
+        currentPage: number,
+        pageSize: number,
+        pageSizes: number[]
+    ) => {
         triggerOnChange(
             {
                 pagination: {
                     ...changeEventInfo.pagination,
                     currentPage,
                     pageSize,
+                    pageSizes,
                 },
             },
             'paginate'
@@ -338,36 +360,68 @@ function InternalTable<RecordType extends object = any>(
 
     // ============================= Data =============================
     const pageData = useMemo<RecordType[]>(() => {
-        if (pagination === false || !mergedPagination.pageSize) {
+        if (
+            pagination === false ||
+            (!mergedPagination.pageSize && !mergedPagination.pageSizes)
+        ) {
             return mergedData;
         }
 
         const {
-            currentPage = 1,
+            currentPage = mergedPagination.pageSizes
+                ? mergedPagination.currentPage || 1
+                : 1,
             total,
-            pageSize = DEFAULT_PAGE_SIZE,
+            pageSize = mergedPagination.pageSizes
+                ? mergedPagination.pageSizes[0]
+                : DEFAULT_PAGE_SIZE,
+            pageSizes,
         } = mergedPagination;
 
         // Dynamic table data
-        if (mergedData.length < total!) {
-            if (mergedData.length > pageSize) {
-                return mergedData.slice(
-                    (currentPage - 1) * pageSize,
-                    currentPage * pageSize
-                );
-            }
-            return mergedData;
-        }
+        if (pageSizes) {
+            for (let i: number = 0; i < pageSizes.length; ++i) {
+                if (pageSize === pageSizes[i]) {
+                    mergedPagination.pageSize = pageSizes[i];
+                    if (mergedData.length < total!) {
+                        if (mergedData.length > pageSizes[i]) {
+                            return mergedData.slice(
+                                (currentPage - 1) * pageSizes[i],
+                                currentPage * pageSizes[i]
+                            );
+                        }
+                        return mergedData;
+                    }
 
-        return mergedData.slice(
-            (currentPage - 1) * pageSize,
-            currentPage * pageSize
-        );
+                    return mergedData.slice(
+                        (currentPage - 1) * pageSizes[i],
+                        currentPage * pageSizes[i]
+                    );
+                }
+            }
+        } else {
+            if (mergedData.length < total!) {
+                if (mergedData.length > pageSize) {
+                    return mergedData.slice(
+                        (currentPage - 1) * pageSize,
+                        currentPage * pageSize
+                    );
+                }
+                return mergedData;
+            }
+
+            return mergedData.slice(
+                (currentPage - 1) * pageSize,
+                currentPage * pageSize
+            );
+        }
+        return null;
     }, [
         !!pagination,
         mergedData,
         mergedPagination?.currentPage,
         mergedPagination?.pageSize,
+        mergedPagination?.pageSizes,
         mergedPagination?.total,
     ]);
 
@@ -442,12 +496,20 @@ function InternalTable<RecordType extends object = any>(
 
     let topPaginationNode: React.ReactNode;
     let bottomPaginationNode: React.ReactNode;
+
     if (pagination !== false && mergedPagination?.total) {
         let paginationSize: TablePaginationConfig['pageSize'];
+        let paginationSizes: TablePaginationConfig['pageSizes'];
+
         if (mergedPagination.pageSize) {
             paginationSize = mergedPagination.pageSize;
         } else {
             paginationSize = undefined;
+        }
+        if (mergedPagination.pageSizes) {
+            paginationSizes = mergedPagination.pageSizes;
+        } else {
+            paginationSizes = undefined;
         }
 
         const renderPagination = (position: string) => (
@@ -470,6 +532,7 @@ function InternalTable<RecordType extends object = any>(
                     mergedPagination.className,
                 ])}
                 pageSize={paginationSize}
+                pageSizes={paginationSizes}
                 total={mergedPagination?.total}
             />
         );
@@ -539,8 +602,9 @@ function InternalTable<RecordType extends object = any>(
                 classNames={mergeClasses([
                     styles.table,
                     { [styles.tableRtl]: htmlDir === 'rtl' },
-                    { [styles.tableMedium]: mergedSize === 'medium' },
-                    { [styles.tableSmall]: mergedSize === 'small' },
+                    { [styles.tableLarge]: mergedSize === TableSize.Large },
+                    { [styles.tableMedium]: mergedSize === TableSize.Medium },
+                    { [styles.tableSmall]: mergedSize === TableSize.Small },
                     { [styles.tableAlternate]: alternateRowColor },
                     { [styles.tableBordered]: bordered },
                     {

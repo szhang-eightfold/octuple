@@ -6,7 +6,7 @@ import React, {
     useState,
 } from 'react';
 import { DropdownProps } from './Dropdown.types';
-import { autoUpdate, shift, useFloating } from '@floating-ui/react-dom';
+import { autoUpdate, flip, shift, useFloating } from '@floating-ui/react-dom';
 import { offset as fOffset } from '@floating-ui/core';
 import {
     ConditionalWrapper,
@@ -56,6 +56,8 @@ export const Dropdown: FC<DropdownProps> = React.memo(
         closeOnOutsideClick = true,
         visible,
         onClickOutside,
+        width,
+        height,
     }) => {
         const [mergedVisible, setVisible] = useMergedState<boolean>(false, {
             value: visible,
@@ -69,7 +71,7 @@ export const Dropdown: FC<DropdownProps> = React.memo(
             useFloating({
                 placement,
                 strategy: positionStrategy,
-                middleware: [fOffset(offset), shift()],
+                middleware: [flip(), fOffset(offset), shift()],
             });
 
         const toggle: Function =
@@ -92,7 +94,7 @@ export const Dropdown: FC<DropdownProps> = React.memo(
             };
 
         useOnClickOutside(
-            refs.reference,
+            refs.floating,
             (e) => {
                 if (closeOnOutsideClick) {
                     toggle(false)(e);
@@ -135,6 +137,8 @@ export const Dropdown: FC<DropdownProps> = React.memo(
             position: strategy,
             top: y ?? '',
             left: x ?? '',
+            width: width ?? '',
+            height: height ?? '',
         };
 
         const getReference = (): JSX.Element => {
